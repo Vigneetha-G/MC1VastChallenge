@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="D3/d3.v3.min.js"></script>
+    <style>
+        body, html {
+            margin: 50px;
+            padding: 0;
+            width: 100%;
+            height: calc(100% - 100px);
+            
+        }
+        .axis path,
+        .axis line {
+            fill: none;
+            stroke: black;
+        }
+        .axis text {
+            font-size: 12px;
+        }
+        .night {
+            fill: green; 
+        }
+        .early-morning {
+            fill: orange; 
+        }
+        .late-night {
+            fill: teal;
+        }
+    </style>
+</head>
+<body>
+<ul>
+  <li><a href="Day.html">Day Campers</a></li>
+  <li><a href="Night.html">Night Campers</a></li>
+</ul>
+
+<svg></svg>
+
+<script type="text/javascript">
+    var w = 700; 
+    var h = 500;
+    var padding = 50;
+    var dataset = [
+        { camping: "camping0", range1: 66, range2: 243 },
+        { camping: "camping2", range1: 102, range2: 333 },
+        { camping: "camping3", range1: 66, range2: 380 },
+        { camping: "camping4", range1: 131, range2: 448, range3: 452 },
+        { camping: "camping5", range1: 155, range2: 531 },
+        { camping: "camping6", range1: 71, range2: 405 },
+        { camping: "camping7", range1: 77, range2: 347 },
+        { camping: "camping8", range1: 135, range2: 540 }
+    ];
+
+    var xScale = d3.scale.ordinal()
+        .domain(dataset.map(function(d) { return d.camping; }))
+        .rangeRoundBands([padding, w - padding], 0.1);
+    var yScale = d3.scale.linear()
+        .domain([0, 550])
+        .range([h - padding, padding]);
+    var xAxis = d3.svg.axis()
+        .scale(xScale)
+        .orient("bottom");
+    var yAxis = d3.svg.axis()
+        .scale(yScale)
+        .orient("left")
+        .ticks(11) 
+        .tickValues(d3.range(0, 551, 50)) 
+        .tickFormat(function(d) { return d; });
+
+    var svg = d3.select("svg")
+        .attr("width", "100%") 
+        .attr("height", "100%") 
+        .attr("viewBox", "0 0 " + w + " " + h); 
+    var bars = svg.append("g");
+    bars.selectAll(".night")
+        .data(dataset)
+        .enter()
+        .append("rect")
+        .attr("class", "night")
+        .attr("x", function(d) { return xScale(d.camping); })
+        .attr("y", function(d) { return yScale(d.range1); })
+        .attr("width", xScale.rangeBand())
+        .attr("height", function(d) { return yScale(0) - yScale(d.range1); });
+    bars.selectAll(".early-morning")
+        .data(dataset)
+        .enter()
+        .append("rect")
+        .attr("class", "early-morning")
+        .attr("x", function(d) { return xScale(d.camping); })
+        .attr("y", function(d) { return yScale(d.range2); })
+        .attr("width", xScale.rangeBand())
+        .attr("height", function(d) { return yScale(d.range1) - yScale(d.range2); });
+    bars.selectAll(".late-night")
+        .data(dataset)
+        .enter()
+        .append("rect")
+        .attr("class", "late-night")
+        .attr("x", function(d) { return xScale(d.camping); })
+        .attr("y", function(d) { return yScale(d.range3); })
+        .attr("width", xScale.rangeBand())
+        .attr("height", function(d) { return yScale(d.range2) - yScale(d.range3); });
+    svg.append("g")
+        .attr("class", "axis")
+        .attr("transform", "translate(0," + (h - padding) + ")")
+        .call(xAxis);
+    svg.append("g")
+        .attr("class", "axis")
+        .attr("transform", "translate(" + padding + ",0)")
+        .call(yAxis);
+    svg.append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("y", 0)
+        .attr("x",0 - (h / 2))
+        .attr("dy", "1em")
+        .style("text-anchor", "middle")
+        .text("Count of Car-Types");
+   svg.append("text")
+        .attr("class", "title")
+        .attr("x", w / 2)
+        .attr("y", padding / 2)
+        .style("text-anchor", "middle")
+        .text("Night Campers");
+   svg.append("rect")
+        .attr("class", "night")
+        .attr("x", w - padding)
+        .attr("y", padding + 30)
+        .attr("width", 18)
+        .attr("height", 18);
+   svg.append("text")
+        .attr("x", w - padding + 24)
+        .attr("y", padding + 42)
+        .attr("dy", ".35em")
+        .style("text-anchor", "start")
+        .text("Night (8pm - 11pm)");
+   svg.append("rect")
+        .attr("class", "early-morning")
+        .attr("x", w - padding)
+        .attr("y", padding + 50)
+        .attr("width", 18)
+        .attr("height", 18);
+   svg.append("text")
+        .attr("x", w - padding + 24)
+        .attr("y", padding + 62)
+        .attr("dy", ".35em")
+        .style("text-anchor", "start")
+        .text("Early Morning (3am - 7am)");
+   svg.append("rect")
+        .attr("class", "late-night")
+        .attr("x", w - padding)
+        .attr("y", padding + 70)
+        .attr("width", 18)
+        .attr("height", 18);
+   svg.append("text")
+        .attr("x", w - padding + 24)
+        .attr("y", padding + 82)
+        .attr("dy", ".35em")
+        .style("text-anchor", "start")
+        .text("Late Night (11pm - 3am)");
+
+</script>
+</body>
+</html>

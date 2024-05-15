@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="D3/d3.v3.min.js"></script>
+    <style>
+        body, html {
+            margin: 50px;
+            padding: 0;
+            width: 100%;
+            height: calc(100% - 100px);
+            }
+        .axis path,
+        .axis line {
+            fill: none;
+            stroke: black;
+        }
+        .axis text {
+            font-size: 12px;
+        }
+        .morning {
+            fill: green;
+        }
+        .afternoon {
+            fill: orange;        
+       }
+        .evening {
+            fill: teal;      
+   }
+    </style>
+</head>
+<body>
+<ul>
+  <li><a href="Day.html">Day Campers</a></li>
+  <li><a href="Night.html">Night Campers</a></li>
+</ul>
+
+<svg></svg>
+
+<script type="text/javascript">
+    var w = 700;    var h = 500;
+    var padding = 50;
+    var dataset = [
+        { camping: "camping0", range1: 614, range2: 1088, range3: 1347 },
+        { camping: "camping1", range1: 149, range2: 266, range3: 298 },
+        { camping: "camping2", range1: 844, range2: 1539, range3: 1947 },
+        { camping: "camping3", range1: 924, range2: 1757, range3: 2084 },
+        { camping: "camping4", range1: 1026, range2: 1850, range3: 2320 },
+        { camping: "camping5", range1: 1237, range2: 2148, range3: 2653 },
+        { camping: "camping6", range1: 977, range2: 1797, range3: 2060 },
+        { camping: "camping7", range1: 886, range2: 1547, range3: 1843 },
+        { camping: "camping8", range1: 1218, range2: 2164, range3: 2680 }
+    ];
+
+    var xScale = d3.scale.ordinal()
+        .domain(dataset.map(function(d) { return d.camping; }))
+        .rangeRoundBands([padding, w - padding], 0.1);
+    var yScale = d3.scale.linear()
+        .domain([0, 2800])
+        .range([h - padding, padding]);
+    var xAxis = d3.svg.axis()
+        .scale(xScale)
+        .orient("bottom");
+    var yAxis = d3.svg.axis()
+        .scale(yScale)
+        .orient("left")
+        .ticks(14)
+        .tickValues(d3.range(0, 2801, 200))
+        .tickFormat(function(d) { return d; });
+    var svg = d3.select("svg")
+        .attr("width", "100%") 
+        .attr("height", "100%") 
+        .attr("viewBox", "0 0 " + w + " " + h); 
+    var bars = svg.append("g");
+    bars.selectAll(".morning")
+        .data(dataset)
+        .enter()
+        .append("rect")
+        .attr("class", "morning")
+        .attr("x", function(d) { return xScale(d.camping); })
+        .attr("y", function(d) { return yScale(d.range1); })
+        .attr("width", xScale.rangeBand())
+        .attr("height", function(d) { return yScale(0) - yScale(d.range1); });
+
+    bars.selectAll(".afternoon")
+        .data(dataset)
+        .enter()
+        .append("rect")
+        .attr("class", "afternoon")
+        .attr("x", function(d) { return xScale(d.camping); })
+        .attr("y", function(d) { return yScale(d.range2); })
+        .attr("width", xScale.rangeBand())
+        .attr("height", function(d) { return yScale(d.range1) - yScale(d.range2); });
+
+    bars.selectAll(".evening")
+        .data(dataset)
+        .enter()
+        .append("rect")
+        .attr("class", "evening")
+        .attr("x", function(d) { return xScale(d.camping); })
+        .attr("y", function(d) { return yScale(d.range3); })
+        .attr("width", xScale.rangeBand())
+        .attr("height", function(d) { return yScale(d.range2) - yScale(d.range3); });
+
+    svg.append("g")
+        .attr("class", "axis")
+        .attr("transform", "translate(0," + (h - padding) + ")")
+        .call(xAxis);
+
+    svg.append("g")
+        .attr("class", "axis")
+        .attr("transform", "translate(" + padding + ",0)")
+        .call(yAxis);
+
+    svg.append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("y", 0)
+        .attr("x",0 - (h / 2))
+        .attr("dy", "1em")
+        .style("text-anchor", "middle")
+        .text("Count of Car-Types");
+    svg.append("text")
+        .attr("class", "title")
+        .attr("x", w / 2)
+        .attr("y", padding / 2)
+        .style("text-anchor", "middle")
+        .text("Day-Campers");
+   svg.append("rect")
+        .attr("class", "morning")
+        .attr("x", w - padding)
+        .attr("y", padding + 30)
+        .attr("width", 18)
+        .attr("height", 18);
+   svg.append("text")
+        .attr("x", w - padding + 24)
+        .attr("y", padding + 42)
+        .attr("dy", ".35em")
+        .style("text-anchor", "start")
+        .text("Morning (7am - 12pm)");
+  svg.append("rect")
+        .attr("class", "afternoon")
+        .attr("x", w - padding)
+        .attr("y", padding + 50)
+        .attr("width", 18)
+        .attr("height", 18);
+  svg.append("text")
+        .attr("x", w - padding + 24)
+        .attr("y", padding + 62)
+        .attr("dy", ".35em")
+        .style("text-anchor", "start")
+        .text("Afternoon (12pm - 4pm)");
+  svg.append("rect")
+        .attr("class", "evening")
+        .attr("x", w - padding)
+        .attr("y", padding + 70)
+        .attr("width", 18)
+        .attr("height", 18);
+  svg.append("text")
+        .attr("x", w - padding + 24)
+        .attr("y", padding + 82)
+        .attr("dy", ".35em")
+        .style("text-anchor", "start")
+        .text("Evening (4pm - 8pm)");
+
+</script>
+</body>
+</html>
